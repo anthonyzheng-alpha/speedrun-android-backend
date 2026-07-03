@@ -1,12 +1,36 @@
 tasks.register('buildRust', Exec) {
     // ensure script doesn't try to start gradle again
     environment 'RUNNING_FROM_GRADLE', '1'
+
+    def sdkDir = getSdkDir()
+    def ndkVersion = libs.versions.ndk.get()
+    def ndkHome = new File(sdkDir, "ndk/${ndkVersion}")
+    if (!ndkHome.exists()) {
+        throw new GradleException(
+            "Android NDK ${ndkVersion} not found at ${ndkHome}. " +
+            "Install it with: \"${sdkDir}/cmdline-tools/latest/bin/sdkmanager\" \"ndk;${ndkVersion}\""
+        )
+    }
+    environment 'ANDROID_HOME', sdkDir
+    environment 'ANDROID_NDK_HOME', ndkHome.absolutePath
+
     workingDir "$rootDir"
     commandLine "cargo", "run", "-p", "build_rust"
 }
 
 def getSdkDir() {
     Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty('sdk.dir')
+    def localProperties = project.rootProject.file('local.properties')
+    if (!localProperties.exists()) {
+        throw new GradleException(
+            "local.properties not found. Create it with sdk.dir pointing to your Android SDK " +
+            "(e.g. sdk.dir=C:/Users/you/AppData/Local/Android/Sdk)."
+        )
+    }
+    properties.load(localProperties.newDataInputStream())
+    def sdkDir = properties.getProperty('sdk.dir')
+    if (sdkDir == null || sdkDir.trim().isEmpty()) {
+        throw new GradleException("sdk.dir is not set in local.properties.")
+    }
+    return sdkDir.replace('\\', '/')
 }
