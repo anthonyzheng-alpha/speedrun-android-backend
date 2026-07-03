@@ -7,15 +7,33 @@ instead of having to reimplement them.
 This is a separate repo that gets published to a library that AnkiDroid consumes,
 so that AnkiDroid development is possible without a Rust toolchain installed.
 
+## Clone
+
+Clone beside [speedrun-android](https://github.com/anthonyzheng-alpha/speedrun-android) with the exact folder name `speedrun-android-backend` (hard-coded in Gradle):
+
+```bash
+git clone --recurse-submodules https://github.com/anthonyzheng-alpha/speedrun-android-backend speedrun-android-backend
+```
+
+If you already cloned without submodules:
+
+    git submodule update --init --recursive
+
+Expected layout:
+
+```
+parent-folder/
+  speedrun-android/
+  speedrun-android-backend/   ← this repo
+```
+
 ## Prerequisites
 
-We assume you already have Android Studio, and are able to build the AnkiDroid
-project already.
+We assume you already have Android Studio, and are able to build the
+[speedrun-android](https://github.com/anthonyzheng-alpha/speedrun-android) project.
 
-The repos `Anki-Android` and `Anki-Android-Backend` should be cloned inside the
-same folder. Furthermore, `Anki-Android-Backend` should not be renamed, as this
-name is hard-coded in AnkiDroid gradle files. Unless stated otherwise, all
-commands below are supposed to be executed in the current repo.
+The repos must sit in the same parent folder. Do not rename `speedrun-android-backend`.
+Unless stated otherwise, all commands below are supposed to be executed in the current repo.
 
 ### Download Anki submodule
 
